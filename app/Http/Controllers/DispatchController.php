@@ -47,63 +47,38 @@ class DispatchController extends Controller
     public function store(Request $request)
     {
 
-        $this->validate($request, [
-            'time_in' => 'required|date_format:H:i',
-            'time_out' => 'date_format:H:i',
-        ]);
         // dd($request->all());
-        $property_id = $request->property_id;
-        $brand_id = $request->brand_id;
-        $date = $request->date;
-        $property_building_id = $request->porperty_building_id;
-        $room_type_id = $request->room_type_id;
-        $room_id = $request->room_id;
-        $service = $request->service_id;
-        $status = $request->status;
-        $attendants = $request->attendant_id;
-        $attendant_two = $request->attendant_two_id;
-        $time_in = $request->time_in;
-        $time_out = $request->time_out;
-        $supervisor = $request->supervisor_id;
-        $add_room = $request->add_room;
-        $houseman = $request->houseman_id;
-        $comments = $request->comments;
-        $total_hrs = $time_in;
-        $budgeting_hrs = 1;
-        $variance = 1;
+        // $this->validate($request, [
+        //     'time_in' => 'required|date_format:H:i',
+        //     'time_out' => 'date_format:H:i',
+        // ]);
 
-
-
-        for ($i = 0; $i < count($room_id); $i++) {
-            Dispatch::updateOrCreate(
-                [
-                    'date' => $date,
-                    'room_id' => $room_id,
-                ],
-                [
-                    'user_id' => auth()->id(),
-                    'date' =>  $date,
-                    'property_id' => $property_id[$i],
-                    'brand_id' => $brand_id[$i],
-                    'property_building_id' => $property_building_id[$i],
-                    'room_type_id' => $room_type_id[$i],
-                    'room_id' => $room_id[$i],
-                    'service_id' => $service[$i],
-                    'status' => $status[$i],
-                    'attendant_id' => $attendants[$i],
-                    'attendant_id_two' => $attendant_two[$i],
-                    'time_in' => $time_in[$i],
-                    'time_out' => $time_out[$i],
-                    'supervisor_id' => $supervisor[$i],
-                    'add_room' => $add_room[$i],
-                    'houseman_id' => $houseman[$i],
-                    'comments' => $comments[$i],
-                    'total_time' => $total_hrs[$i],
-                    'budget_time' => 1,
-                    'variance' => 1,
-                ]
-            );
+        foreach ($request->room_id as $key => $roomId) {
+            Dispatch::updateOrCreate([
+                'date' => $request->date, // maybe it's only one date, I don't know
+                'room_id' => $roomId,
+            ], [
+                'user_id' => auth()->id(),
+                'property_id' => $request->property_id,
+                'brand_id' => $request->brand_id[$key],
+                'property_building_id' => $request->porperty_building_id[$key],
+                'room_type_id' => 1,
+                'service_id' => $request->service_id[$key],
+                'status' => $request->status[$key],
+                'attendant_id' => $request->attendant_id[$key],
+                'attendant_id_two' => $request->attendant_two_id[$key],
+                'time_in' => $request->time_in[$key],
+                'time_out' => $request->time_out[$key],
+                'supervisor_id' => $request->supervisor_id[$key],
+                'add_room' => $request->add_room[$key],
+                'houseman_id' => $request->houseman_id[$key],
+                'comments' => $request->comments[$key],
+                'total_time' => Carbon::parse($request->time_in[$key])->diffInMinutes($request->time_out[$key]),
+                'budget_time' => 1,
+                'variance' => 1,
+            ]);
         }
+
         return redirect()
             ->back()->with('success', 'dispatch successfully');
     }

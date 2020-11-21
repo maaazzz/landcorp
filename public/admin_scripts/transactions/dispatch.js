@@ -238,13 +238,6 @@ $(document).ready(function() {
 
                     });
 
-
-
-
-
-
-
-
                 }
 
 
@@ -252,18 +245,18 @@ $(document).ready(function() {
                 //  <td>' + '<input type="hidden" value="' + 1 + ' " name="room_type_id[]" />' + '</td>' + '</td>\
                 if (data.dispatchs == 0) {
                     // console.log('false');
-                    trHTML = '<tr>\
+                    trHTML = '<tr id="dispatch_create">\
                         <input type="hidden" name="room_type_id" value="' + room_type_id + '">\
                     <input type="hidden" value="' + brand_id + '" name="brand_id[]">\
                          <td>' + '<input type="hidden" value="' + building_id + ' " name="porperty_building_id[]" />' + '</td>\
-                     <td>' + '<input type="hidden" value="' + 1 + ' " name="room_type_id[]" />' + '</td>' + '</td>\
+                     <td>' + '<input type="hidden" value="' + room_type_id + ' " name="room_type_id[]" />' + '</td>' + '</td>\
                     <td>' + roomsHTML + '</td> \
                      <td>' + serviceHTML + '</td> \
                      <td>' + status + '</td>\
                      <td>' + graHTML + '</td>  \
                      <td>' + gratwoHTML + '</td>  \
-                     <td>' + '<input type="text" name="time_in[]" class="btn btn-sm btn-primary" value="Time In" id="time_in">' + '</td>\
-                     <td>' + '<input type="text" name="time_out[]" class="btn btn-sm btn-primary" value="Time Out" id="time_out">' + '</td>\
+                     <td>' + '<input type="time" name="time_in[]" class="btn btn-sm btn-primary time_in"  id="">' + '</td>\
+                     <td>' + '<input type="time" name="time_out[]" class="btn btn-sm btn-primary time_out" >' + '</td>\
                      <td>' + roomHTML + '</td>  \
                      <td>' + '<input type="text" placeholder="comment " name="comments[]" />' + '</td>\
                         <td>' + supervisors + '</td>\
@@ -271,32 +264,61 @@ $(document).ready(function() {
                         <td>' + '<p>pending</p>' + '</td>\
                         <td>' + '<p>pending</p>' + '</td>\
                         <td>' + '<p>pending</p>' + '</td>\
+                        <td>' + '<a href="" class="add_row"><i class="fa fa-plus fa-2x"></a>' + '</td>\
                     tr > ';
 
                     $('#results').append(trHTML);
+
+                    $(document).on('click', '.add_row', function(event) {
+                        var newHTML = '<tr id="dispatch_create">\
+                        <input type="hidden" name="room_type_id" value="' + room_type_id + '">\
+                    <input type="hidden" value="' + brand_id + '" name="brand_id[]">\
+                         <td>' + '<input type="hidden" value="' + building_id + ' " name="porperty_building_id[]" />' + '</td>\
+                     <td>' + '<input type="hidden" value="' + room_type_id + ' " name="room_type_id[]" />' + '</td>' + '</td>\
+                    <td>' + roomsHTML + '</td> \
+                     <td>' + serviceHTML + '</td> \
+                     <td>' + status + '</td>\
+                     <td>' + graHTML + '</td>  \
+                     <td>' + gratwoHTML + '</td>  \
+                     <td>' + '<input type="time" name="time_in[]" class="btn btn-sm btn-primary time_in"  id="">' + '</td>\
+                     <td>' + '<input type="time" name="time_out[]" class="btn btn-sm btn-primary time_out"  id="">' + '</td>\
+                     <td>' + roomHTML + '</td>  \
+                     <td>' + '<input type="text" placeholder="comment " name="comments[]" />' + '</td>\
+                        <td>' + supervisors + '</td>\
+                        <td>' + housemans + '</td>\
+                        <td>' + '<p>pending</p>' + '</td>\
+                        <td>' + '<p>pending</p>' + '</td>\
+                        <td>' + '<p>pending</p>' + '</td>\
+                        <td>' + '<a href="" class="add_row"><i class="fa fa-plus fa-2x"></a>' + '</td>\
+                    tr > ';
+                        event.preventDefault();
+                        $(newHTML).appendTo('#results');
+                        newHTML++;
+
+
+                    });
                 }
 
 
-
-
-
-
-
-                $('#time_in').on('click', function() {
+                $(document).on('click', '.time_in', function() {
+                    var row = $(this).closest('tr');
                     var dt = new Date();
                     var time_in = dt.getHours() + ":" + dt.getMinutes();
-                    $("#time_in").val(time_in);
+                    $(row.find('.time_in')).val(time_in);
+                    // $(".time_in").val(time_in);
                     $(this).removeClass('btn btn-sm btn-primary');
                     $(this).prop('readonly', true);
 
                 });
 
-                $('#time_out').on('click', function() {
+                $(document).on('click', '.time_out', function() {
+                    var row = $(this).closest('tr');
                     var dt = new Date();
                     var time_out = dt.getHours() + ":" + dt.getMinutes();
-                    $("#time_out").val(time_out);
+                    $(row.find('.time_out')).val(time_out);
                     $(this).removeClass('btn btn-sm btn-primary');
                     $(this).prop('readonly', true);
+                    console.log('hello');
 
                 });
 
