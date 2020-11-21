@@ -207,8 +207,8 @@ $(document).ready(function() {
                              </select>'
 
 
-                        var time_in = '<input type="text" name="time_in[]" class="" readonly value="' + dispatch.time_in + '" id="time_in">';
-                        var time_out = '<input type="text" name="time_out[]" class="btn btn-sm btn-primary" value="' + (dispatch.time_out == 0 ? "0" : dispatch.time_out) + '" id="time_out">'
+                        var time_in = '<input type="text" name="time_in[]" class="time_in" readonly value="' + dispatch.time_in + '" id="">';
+                        var time_out = '<input type="text" name="time_out[]" class="btn btn-sm btn-primary time_out" value="' + (dispatch.time_out == 0 ? "0" : dispatch.time_out) + '" id="">'
 
 
                         trHTML = '<tr>\
