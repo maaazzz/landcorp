@@ -52,7 +52,7 @@ class DispatchController extends Controller
         //     'time_in' => 'required|date_format:H:i',
         //     'time_out' => 'date_format:H:i',
         // ]);
-
+        // dd($request->all());
         foreach ($request->room_id as $key => $roomId) {
             Dispatch::updateOrCreate([
                 'date' => $request->date, // maybe it's only one date, I don't know
@@ -73,7 +73,7 @@ class DispatchController extends Controller
                 'add_room' => $request->add_room[$key],
                 'houseman_id' => $request->houseman_id[$key],
                 'comments' => $request->comments[$key],
-                'total_time' => Carbon::parse($request->time_in[$key])->diffInMinutes($request->time_out[$key]),
+                'total_time' => Carbon::parse($request->time_in[$key])->DiffInHours($request->time_out[$key]),
                 'budget_time' => 1,
                 'variance' => 1,
             ]);

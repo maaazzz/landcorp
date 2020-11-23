@@ -33,4 +33,9 @@ class Property extends Model
     {
         return $this->hasMany('App\Model\Room');
     }
+
+    public function propertyBrand()
+    {
+        return $this->belongsTo('App\Model\PropertyBrand');
+    }
 }

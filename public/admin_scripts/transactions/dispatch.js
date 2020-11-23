@@ -1,7 +1,7 @@
 $(document).ready(function() {
-    $('body').on('change', '#property', function() {
-
-        // $('.time_in').show();
+    $('body').on('click', '#property', function(event) {
+        event.preventDefault()
+            // $('.time_in').show();
 
         var date = $('#property').val();
         // console.log(date);
@@ -15,12 +15,16 @@ $(document).ready(function() {
                 data: date,
             },
             success: function(data) {
-
+                // console.log(data);
                 var trHTML = '';
 
                 var building_id = $('#props').find(':selected').attr('data-building-id');
+                var building = $('#props').find(':selected').attr('data-building-name');
+
+                var brand_name = $('#props').find(':selected').attr('data-brand-name');
                 var brand_id = $('#props').find(':selected').attr('data-brand-id');
-                // console.log(building_id);
+                console.log(brand_id);
+
                 // var service_name;
                 // service HTML
                 var serviceHTML = '<select class="text-secondary" name="service_id[]"><option selected disabled>Select Service</option>'
@@ -34,11 +38,18 @@ $(document).ready(function() {
 
                 //  rooms HTML
                 var room_type_id;
-                var roomsHTML = '<select class="text-secondary js-example-basic-single" name="room_id[]" ><option selected disabled>Select rooms</option>'
+                var roomsHTML = '<select class="text-secondary js-example-basic-single " name="room_id[]" id="room_t" required><option selected disabled value="">Select rooms</option>'
                 $.each(data.rooms, function(j, rum) {
-                    roomsHTML += '<option value=' + rum.id + '>' + rum.room_name + '</option>'
-                    room_type_id = rum.room_type_id;
+                    console.log(rum.room_type_id);
+                    roomsHTML += '<option value=' + rum.id + ' data-room-type="' + rum.room_type + '">' + rum.room_name + '</option>'
+                        // room_type_id = rum.room_type_id;
+                        // console.log('room' + room_type_id);
                 });
+                $(document).on('click', '#room_t', function() {
+                    var room_type_name = $('#room_t').find(':selected').attr('data-room-type');
+                    console.log(room_type_name);
+                });
+
                 roomsHTML += '</select>';
                 // end of rooms
 
@@ -103,7 +114,7 @@ $(document).ready(function() {
 
                     $.each(data.dispatchs, function(j, dispatch) {
 
-                        //
+                        // console.log();
 
                         // service HTML
                         var serviceHTML = '<select class="text-secondary" name="service_id[]"><option disabled>select Service</option>'
@@ -120,7 +131,7 @@ $(document).ready(function() {
 
                         //  rooms HTML
                         var room_type_id;
-                        var roomsHTML = '<select class="text-secondary js-example-basic-single" name="room_id[]" ><option selected disabled>Select rooms</option>'
+                        var roomsHTML = '<select class="text-secondary js-example-basic-single" name="room_id[]" required><option  disabled value="" selected>Select rooms</option>'
                         $.each(data.rooms, function(j, rum) {
 
                             if (rum.id == dispatch.room_id) {
@@ -207,14 +218,15 @@ $(document).ready(function() {
                              </select>'
 
 
-                        var time_in = '<input type="text" name="time_in[]" class="time_in" readonly value="' + dispatch.time_in + '" id="">';
-                        var time_out = '<input type="text" name="time_out[]" class="btn btn-sm btn-primary time_out" value="' + (dispatch.time_out == 0 ? "0" : dispatch.time_out) + '" id="">'
+                        var time_in = '<input type="text" name="time_in[]" class="time_in" readonly value="' + dispatch.time_in + '" >';
+                        var time_out = '<input type="text" name="time_out[]" class=" ' + (dispatch.time_out == null ? "btn btn-primary btn-sm" : "") + ' time_out" value="' + (dispatch.time_out == null ? "time out" : dispatch.time_out) + '" >'
 
 
                         trHTML = '<tr>\
                     <input type="hidden" value=' + dispatch.brand_id + ' name="brand_id[]">\
-                         <td>' + '<input type="hidden" value="' + dispatch.property_building_id + ' " name="porperty_building_id[]" />' + '</td>\
-                     <td>' + '<input type="hidden" value="' + dispatch.room_type_id + ' " name="room_type_id[]" />' + '</td>' + '</td>\
+                         <td class="column0 ">' + '<input type="hidden" value="' + dispatch.property_building_id + ' " name="porperty_building_id[]" />' + building + '</td>\
+                            <td class="column1">' + brand_name + '</td>\
+                     <input type="hidden" value="' + dispatch.room_type_id + ' " name="room_type_id[]" />\
                     <td>' + roomsHTML + '</td> \
                      <td>' + serviceHTML + '</td> \
                      <td>' + status + '</td>\
@@ -226,9 +238,10 @@ $(document).ready(function() {
                      <td>' + '<input type="text" placeholder="comment " name="comments[]" value="' + dispatch.comments + ' " />' + '</td>\
                         <td>' + supervisors + '</td>\
                         <td>' + housemans + '</td>\
+                        <td>' + dispatch.total_time + ' mins</td>\
                         <td>' + '<p>pending</p>' + '</td>\
                         <td>' + '<p>pending</p>' + '</td>\
-                        <td>' + '<p>pending</p>' + '</td>\
+                         <td>' + '<a href="" class="add_row"><i class="fa fa-plus fa-2x"></a>' + '</td>\
                     tr > ';
 
                         $('#results').append(trHTML);
@@ -246,22 +259,22 @@ $(document).ready(function() {
                 if (data.dispatchs == 0) {
                     // console.log('false');
                     trHTML = '<tr id="dispatch_create">\
-                        <input type="hidden" name="room_type_id" value="' + room_type_id + '">\
+                       <input type="hidden" value="' + room_type_id + ' " name="room_type_id[]" />\
                     <input type="hidden" value="' + brand_id + '" name="brand_id[]">\
-                         <td>' + '<input type="hidden" value="' + building_id + ' " name="porperty_building_id[]" />' + '</td>\
-                     <td>' + '<input type="hidden" value="' + room_type_id + ' " name="room_type_id[]" />' + '</td>' + '</td>\
+                         <td class="column0">' + '<input type="hidden" value="' + building_id + ' " name="porperty_building_id[]" />' + building + '</td>\
+                         <td class="column1">' + brand_name + '</td>\
                     <td>' + roomsHTML + '</td> \
                      <td>' + serviceHTML + '</td> \
                      <td>' + status + '</td>\
                      <td>' + graHTML + '</td>  \
                      <td>' + gratwoHTML + '</td>  \
-                     <td>' + '<input type="time" name="time_in[]" class="btn btn-sm btn-primary time_in"  id="">' + '</td>\
+                     <td>' + '<input type="time" name="time_in[]" class="btn btn-sm btn-primary time_in"  >' + '</td>\
                      <td>' + '<input type="time" name="time_out[]" class="btn btn-sm btn-primary time_out" >' + '</td>\
                      <td>' + roomHTML + '</td>  \
                      <td>' + '<input type="text" placeholder="comment " name="comments[]" />' + '</td>\
                         <td>' + supervisors + '</td>\
                         <td>' + housemans + '</td>\
-                        <td>' + '<p>pending</p>' + '</td>\
+                        <td>' + '<p>0</p>' + '</td>\
                         <td>' + '<p>pending</p>' + '</td>\
                         <td>' + '<p>pending</p>' + '</td>\
                         <td>' + '<a href="" class="add_row"><i class="fa fa-plus fa-2x"></a>' + '</td>\
@@ -269,19 +282,22 @@ $(document).ready(function() {
 
                     $('#results').append(trHTML);
 
-                    $(document).on('click', '.add_row', function(event) {
-                        var newHTML = '<tr id="dispatch_create">\
+
+                }
+                $(document).on('click', '.add_row', function(event) {
+                    var newHTML = '<tr id="dispatch_create">\
+                      <input type="hidden" value="' + room_type_id + ' " name="room_type_id[]" />\
                         <input type="hidden" name="room_type_id" value="' + room_type_id + '">\
                     <input type="hidden" value="' + brand_id + '" name="brand_id[]">\
-                         <td>' + '<input type="hidden" value="' + building_id + ' " name="porperty_building_id[]" />' + '</td>\
-                     <td>' + '<input type="hidden" value="' + room_type_id + ' " name="room_type_id[]" />' + '</td>' + '</td>\
+                         <td class="column0">' + '<input type="hidden" value="' + building_id + ' " name="porperty_building_id[]" />' + building + '</td>\
+                        <td class="column1">' + brand_name + '</td>\
                     <td>' + roomsHTML + '</td> \
                      <td>' + serviceHTML + '</td> \
                      <td>' + status + '</td>\
                      <td>' + graHTML + '</td>  \
                      <td>' + gratwoHTML + '</td>  \
-                     <td>' + '<input type="time" name="time_in[]" class="btn btn-sm btn-primary time_in"  id="">' + '</td>\
-                     <td>' + '<input type="time" name="time_out[]" class="btn btn-sm btn-primary time_out"  id="">' + '</td>\
+                     <td>' + '<input type="time" name="time_in[]" class="btn btn-sm btn-primary time_in"  >' + '</td>\
+                     <td>' + '<input type="time" name="time_out[]" class="btn btn-sm btn-primary time_out"  >' + '</td>\
                      <td>' + roomHTML + '</td>  \
                      <td>' + '<input type="text" placeholder="comment " name="comments[]" />' + '</td>\
                         <td>' + supervisors + '</td>\
@@ -291,13 +307,12 @@ $(document).ready(function() {
                         <td>' + '<p>pending</p>' + '</td>\
                         <td>' + '<a href="" class="add_row"><i class="fa fa-plus fa-2x"></a>' + '</td>\
                     tr > ';
-                        event.preventDefault();
-                        $(newHTML).appendTo('#results');
-                        newHTML++;
+                    event.preventDefault();
+                    $(newHTML).appendTo('#results');
+                    newHTML++;
+                    $('.js-example-basic-single').select2();
 
-
-                    });
-                }
+                });
 
 
                 $(document).on('click', '.time_in', function() {
@@ -315,6 +330,7 @@ $(document).ready(function() {
                     var row = $(this).closest('tr');
                     var dt = new Date();
                     var time_out = dt.getHours() + ":" + dt.getMinutes();
+                    console.log(time_out);
                     $(row.find('.time_out')).val(time_out);
                     $(this).removeClass('btn btn-sm btn-primary');
                     $(this).prop('readonly', true);

@@ -12,4 +12,9 @@ class PropertyBrand extends Model
     {
         return $this->hasMany('App\Model\Schedule', 'property_brand_id');
     }
+
+    public function properties()
+    {
+        return $this->hasMany('App\Model\Property', 'property_brand_id');
+    }
 }
